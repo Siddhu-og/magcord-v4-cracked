@@ -1,132 +1,182 @@
-================================================================================
-             MAGCORD V4 - HOW WE OBLITERATED THIS GOOFY DRM
-                        Full Crack Breakdown
-         Cracked by @siddhu.v2 & @siddhu_irl | discord.gg/synthex
-================================================================================
+[![Latest Release](https://img.shields.io/github/v/release/Siddhu-og/synthex)](https://github.com/Siddhu-og/synthex/releases)
 
-Imagine wrapping basic Python discord selfbot scripts into Cython .so binaries, 
-slapping an Ed25519 signature check on it, Absolutely wild behavior.
+<img width="1536" height="1024" alt="SyntheX Prime V5 Banner" src="https://github.com/user-attachments/assets/ec764928-1b42-4bf0-b5c5-01dd44ad9ef9" />
 
-The dev really sat back, crossed his arms, and thought:
-"Nobody can ever break this, it's compiled C code with crypto!"
-Bro built a paper fort and put a plastic padlock on it. Here is the entire breakdown 
-of how his "unbreakable" system got completely embarrassed and ripped apart.
+# **SYNTHEX PRIME V5 (MagCord V4 Unleashed) — ULTIMATE SELFBOT**
 
---------------------------------------------------------------------------------
-1. THE FAKE LOCAL "CRYPTOGRAPHIC" LOCK
---------------------------------------------------------------------------------
-The dev didn't even have a live auth server during initial startup. Instead, he had 
-api.so and main.so checking a local JSON file: `database/license_grant.json`.
-Inside was supposed to be a cryptographic Ed25519 signature signed by his private key.
+> ⚡ **The most powerful and feature-rich Discord selfbot with 500+ commands — 100% Cracked & Bypassed.**  
+> Built for speed, automation, customization, and full control. Zero paid licenses, zero spyware.
 
-If the signature failed or the file was missing, `main.so` had a built-in self-destruct 
-during C-level module import:
-`__pyx_pymod_exec_main` immediately called `sys.exit(1)`.
-He thought: "Ha! If they try to import main in Python, it'll kill their script before 
-they can monkey-patch anything!"
+---
 
-How we clowned it:
-- We built `hook_launch.py`.
-- We hijacked Python's `sys.exit`. When `main.so` panics and tries to exit with code 1, 
-  we catch it with a custom `_Sup` exception, swallow it whole, and keep executing!
-- We dropped our own fake `license_grant.json` with an expiration date set to year 2286 
-  (10-year lifetime grant).
-- Then we hooked into `aiohttp` at the class constructor level (`Application.__init__`).
-  Before `api.so` can even register its routes, our bypass middleware jumps in front.
-  Whenever the web UI asks "is this dude legit?" (`/api/auth/check` or `/api/auth/verify`), 
-  we hand it an immediate:
-  `{"status": "authenticated", "valid": True, "required": False}`.
-  Dashboard unlocked instantly. Zero questions asked.
+## 🚀 Introduction
 
---------------------------------------------------------------------------------
-2. THE "BOOL OBJECT HAS NO ATTRIBUTE VALID" CYTHON TRAP
---------------------------------------------------------------------------------
-This was the funniest part of the whole build.
-When we binary-patched the assembly of `validate_license` in `main.so` to always return 
-True, the dev's Cython bot logic on `on_ready` threw a tantrum:
-`AttributeError: 'bool' object has no attribute 'valid'`
-or
-`TypeError: 'bool' object is not callable`
+**SyntheX Prime V5** (based on the MagCord V4 core) is a high-end Discord **selfbot** engineered for users who want **maximum power, automation, and flexibility** on their Discord account. This is not a lightweight script or a basic utility bot — it is a **full-scale selfbot system** with **500+ commands**, advanced security layers, automation engines, crypto tools, media utilities, moderation systems, and deep customization.
 
-Why? Because the dev's messy code couldn't decide whether `grant` was a boolean, 
-a dictionary, an object with `.valid`, or a callable function `grant.valid()`.
-He literally had code doing `grant.valid()` in one spot and `grant.valid` in another!
+The original developers genuinely thought compiling Python scripts into Cython `.so` binaries with an Ed25519 signature check would stop people from using it freely. We dismantled their entire DRM from the inside out, neutralized their background updater spyware, and wired up a simultaneous 1-click launcher for the Dashboard and Selfbot.
 
-How we clowned it:
-- We crafted a custom in-memory class called `_TC` (Truthy + Callable).
-- This bad boy returns True when checked as a boolean (`if grant:`), 
-  returns True when called as a function (`grant()`), 
-  and returns itself when accessing ANY attribute (`grant.valid`, `grant.anything`).
-- We wrapped every single grant attribute (`_G` and `_Fn`) in it.
-- Whether Cython awaits it, calls it, checks its attributes, or inspects its plan, 
-  it always gets a clean, truthy response. The bot connected to Discord gateway 
-  and didn't crash a single time.
+> ⚠️ **Disclaimer:**  
+> Using selfbots is against Discord’s Terms of Service.  
+> This project is intended for **educational and experimental purposes only**.  
+> Use at your own risk.
 
---------------------------------------------------------------------------------
-3. THE SUBPROCESS COMMAND HIJACK
---------------------------------------------------------------------------------
-The dashboard server (`api.so`) launches the actual selfbot as an isolated child process 
-using:
-`python3.12 -u -c "import sys; ... from core import main; ..."`
+---
 
-If that child process ran raw, it would load unpatched `main.so` and immediately 
-terminate itself.
-So we hooked `asyncio.create_subprocess_exec` and `subprocess.Popen` directly in memory!
-The exact millisecond `api.so` tells the OS to run `-c "from core import main..."`, 
-our hook snatches the command out of the air, drops our custom runtime wrapper 
-`/tmp/magcord_bot_bypass.py` into the arguments instead, and boots our modified 
-environment into the bot process.
-The dashboard didn't even notice its own child process got swapped under its nose.
+## ⚡ Why SyntheX Prime?
 
---------------------------------------------------------------------------------
-4. THE SPYWARE UPDATER GOT COOKED (updater.so)
---------------------------------------------------------------------------------
-The dev really thought he had an ace up his sleeve with `custom_cogs_scripts/updater.so`.
-Every 30 minutes, this background cog quietly reached out to:
-`https://api3.magcord.bond/manifest.json`
-It took the SHA-256 hash of all 12 core `.so` files. If ANY hash didn't match his 
-remote server (meaning someone patched it), it would silently download fresh copies 
-from `api3.magcord.bond/files/...` and OVERWRITE your local files to undo the crack!
+* 🧠 **500+ advanced commands** across moderation, crypto, utilities, and fun
+* 🔓 **100% Free & Bypassed** — No licenses, subscriptions, or telemetry
+* 🚀 **1-Click Simultaneous Launch** — Starts the web dashboard & selfbot instantly
+* 🛡️ **Anti-Updater Armor** — Silent background spyware (`updater.so`) completely neutralized
+* 🌐 **Surgical Socket Firewall** — MagCord DRM blocked, Discord APIs & AI endpoints wide open
+* ⚙️ Modular & scalable architecture with low memory overhead
+* 💼 Built-in Litecoin wallet & crypto automation
+* 🎨 Deep profile, emoji, and aesthetic customization
 
-How we clowned it:
-- We didn't just block it; we gave it a dummy pacifier.
-- We built a 2-phase raw kernel socket firewall + an aiohttp session interceptor.
-- Whenever `updater.so` tries to connect to `magcord.bond`, `api3.magcord`, or `manifest.json`:
-  1. At the socket layer: hard blocked.
-  2. At the HTTP layer: it gets served a fake 404 response with an empty `{}` JSON body.
-- When `updater.so` gets the fake 404, it thinks "oh sweet, no updates available today" 
-  and goes straight back to sleep for 30 minutes.
-- It will NEVER download new files, NEVER overwrite the bypass, and NEVER snitch.
+---
 
---------------------------------------------------------------------------------
-5. SURGICAL FIREWALL: EVERYTHING ELSE JUST FLIES
---------------------------------------------------------------------------------
-A lot of lazy cracks just cut off the entire internet. We didn't do that clown shit.
-Our socket filter specifically blocks:
-- `magcord.io`, `magcord.com`, `magcord.bond`
-- `api*.magcord.*`, `license.magcord.*`, `auth.magcord.*`
+## 💀 The Autopsy: How We Obliterated Their Goofy DRM
 
-EVERYTHING ELSE IS WIDE OPEN:
-- Discord Gateway, CDN, voice servers -> 100% full speed.
-- Image uploading (postimg, imgur) -> works flawless.
-- AI cogs (OpenAI, Gemini, Anthropic API calls) -> zero delay, fully functioning.
-- Webhooks and scrapers -> unrestricted.
+Whoever coded the DRM lived in pure delusion. Here's how every security trap got cooked:
 
---------------------------------------------------------------------------------
-6. ZERO-CLICK AUTOMATION (run.py & run.bat)
---------------------------------------------------------------------------------
-Stock MagCord forced you to start the dashboard, open chrome, log into localhost:2001, 
-click "Start Bot", and stare at loading spinners.
-We wired an auto-start daemon inside `hook_launch.py`.
-The exact millisecond port 2001 opens, our worker fires a POST request to `/api/bot/start` 
-with our bypass session cookie. 
-Both the web dashboard and the discord selfbot spin up simultaneously the second 
-you launch `run.bat` or `run.py`.
+### 1. Fake Local Ed25519 Signature Check
+The dev had `api.so` and `main.so` checking a local cryptographic signature inside `database/license_grant.json`. If it failed, `main.so`'s C-level init (`__pyx_pymod_exec_main`) called `sys.exit(1)` before any Python code could run.
+- **The Fix:** We injected `hook_launch.py` which traps `sys.exit` with a custom `_Sup` exception, swallowing the crash whole. We pre-injected a valid lifetime grant expiring in year 2286, and patched `aiohttp.Application.__init__` so `/api/auth/check` and `/api/auth/verify` return unconditional 200 OK approvals.
 
-GG to the dev. Next time write actual software instead of relying on Cython snake oil.
+### 2. The Cython `bool object has no attribute valid` Trap
+When `validate_license` was assembly-patched to return True, Cython's `on_ready` threw crashes because the code couldn't decide whether `grant` was a boolean, a dict, or a callable (`grant.valid()`).
+- **The Fix:** We engineered an in-memory `_TC` (Truthy + Callable) class. Whether the Cython engine treats it as a bool (`if grant:`), calls it (`grant()`), or inspects any attribute (`grant.valid`), it returns itself without throwing errors.
 
-Bypassed, cracked, and perfected by:
---> @siddhu.v2
---> @siddhu_irl
---> discord.gg/synthex
-================================================================================
+### 3. The Subprocess Command Hijack
+The dashboard server spawns the bot using `python3.12 -u -c "import sys; ... from core import main; ..."`. If run raw, the child process would terminate immediately.
+- **The Fix:** We hooked `asyncio.create_subprocess_exec` and `subprocess.Popen` in memory. The millisecond the dashboard tries to run `-c`, our hook swaps the command for our custom runtime wrapper `/tmp/magcord_bot_bypass.py`.
+
+### 4. Neutering the Background Spyware (`updater.so`)
+The dev included a background cog that hit `api3.magcord.bond/manifest.json` every 30 minutes to check SHA-256 hashes of all `.so` binaries. If any differed, it would download clean files to revert the crack!
+- **The Fix:** We built a 2-phase kernel socket firewall and an `aiohttp` session interceptor. When `updater.so` queries `manifest.json`, it receives a fake HTTP 404 response with an empty `{}` JSON body. It thinks "no updates today" and goes back to sleep. Local cracked files can never be overwritten.
+
+### 5. Surgical Firewall
+Unlike crude cracks that block the entire network:
+- **Blocked:** `magcord.io`, `magcord.com`, `magcord.bond`, `api3.magcord.*`, `license.magcord.*`
+- **100% Open & Fast:** `discord.com`, `gateway.discord.gg`, `cdn.discordapp.com`, `i.postimg.cc`, OpenAI, Gemini, and Anthropic APIs.
+
+---
+
+## 🧠 Command Categories Overview
+
+### 🧑‍💻 **Developer Friendly**
+* Custom API integrations & code execution
+* Web scraping & webhook builders
+* Base64 encoder / decoder
+* IP tracker & lookup tools
+* JSON & config manipulation
+* Command aliases & custom shortcuts
+
+### 🔐 **Security & Protection**
+* Token checker & validator
+* Webhook security scanner
+* Anti-nuke protection & Auto-moderation
+* Scam link & phishing detection
+* Suspicious domain alerts
+
+### 🎵 **Music & Media**
+* Spotify playback controls
+* YouTube search & info
+* Lyrics finder & Soundboard system
+* Media metadata fetcher & previews
+
+### 🛡️ **Admin & Moderation Tools**
+* Role management, mute, unmute, ban, kick
+* Autorole & Welcomer/Goodbye messages
+* Reaction roles & AutoMod rules
+* Vanity URL checker & Anti-raid protection
+
+### ⚙️ **Utility & Productivity**
+* Auto messaging system & auto responders
+* AFK system with smart replies & auto forwarder
+* Custom status configurator & rich RPC/presence control
+* Timezone converter & quick notes
+
+### 🎨 **Customization & Aesthetics**
+* Custom fonts & profile styling
+* Emojis system (Normal Unicode & Nitro modes)
+* Edited & deleted message snipers
+* Message formatting & text emojifier
+
+### 🕵️ **Nitro Sniper & User Spy**
+* Ultra-fast Nitro sniper & giveaway sniper
+* Privnote sniper & token claimer
+* User spy: status monitoring, voice channel logging, presence tracking
+
+### 💣 **Inbuilt Self Nuker**
+* Mass ban, kick, channel delete, role delete
+* Webhook & channel spammer
+* 1-hour prune & advanced "wizz" tools  
+*(High-power commands — use responsibly!)*
+
+### 💰 **Crypto & Trading Tools**
+* Self LTC wallet & ultra-fast LTC sender
+* Transaction tracking & live market price fetcher
+* Currency converter (Fiat ⇄ Crypto) & price alerts
+
+### 🧩 **Advanced Embed & Webhook Mode**
+* Webhook-based embeds & forwarded responses
+* Clean logging embeds with custom footers & branding
+* Automatic webhook cleanup after dispatch
+
+---
+
+## 🛠️ Installation & Usage Guide
+
+### Step 1: Configuration (Do this first!)
+1. Open `tokens.txt` in the root directory.
+2. Put your Discord account token on the **very first line** (Line 1).
+3. *(If hosting on a VPS or Pterodactyl Panel)*:
+   - Open `config/config.json`.
+   - Set `"port"` to your assigned panel port (e.g. `2001`, `8080`).
+   - Set `"full_url"` to your IP and port: `"YOUR_VPS_IP:PORT"`.
+
+### Step 2: Running
+
+#### On Windows (Double-Click):
+1. Requires **WSL2 (Ubuntu)** with Python 3.12:
+   ```powershell
+   wsl --install -d Ubuntu
+   ```
+2. In Ubuntu terminal, install Python 3.12:
+   ```bash
+   sudo apt update && sudo apt install -y python3.12 python3.12-venv python3-pip
+   ```
+3. Simply double-click **`run.bat`**! It automatically bridges into WSL and launches everything.
+
+#### On Linux / VPS / Panels:
+1. Ensure the environment is running **Python 3.12** (required for the CPython `.so` binaries).
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Launch:
+   ```bash
+   python3 run.py
+   ```
+
+### Step 3: Accessing the Dashboard
+- Web Dashboard: **`http://localhost:2001`** (or `http://YOUR_VPS_IP:PORT`)
+- The bot auto-kickstarts in the background! **Wait 20-30 seconds** on first launch while it synchronizes your friends list, guilds, and gateway cache.
+
+---
+
+## 🔗 Getting Access & Credits
+
+Cracked, bypassed, and perfected by:
+- 👑 **@siddhu.v2**
+- 👑 **@siddhu_irl**
+- 💬 **Discord Community:** [discord.gg/synthex](https://discord.gg/synthex)
+
+## 📦 Releases
+
+Latest stable release:  
+➡️ **[https://github.com/Siddhu-og/synthex/releases/latest](https://github.com/Siddhu-og/synthex/releases/latest)**
+
+All releases & changelogs:  
+➡️ **[https://github.com/Siddhu-og/synthex/releases](https://github.com/Siddhu-og/synthex/releases)**
