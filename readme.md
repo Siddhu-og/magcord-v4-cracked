@@ -117,10 +117,8 @@ http://YOUR_VPS_IP:PORT
 ## 📦 Releases
 
 Latest release:  
-➡️ [https://github.com/Siddhu-og/synthex/releases/latest](https://github.com/Siddhu-og/synthex/releases/latest)
+➡️ [Magcord v4 License Bypassed](https://github.com/Siddhu-og/magcord-v4-cracked/releases/tag/MagCord)
 
-All releases:  
-➡️ [https://github.com/Siddhu-og/synthex/releases](https://github.com/Siddhu-og/synthex/releases)
 
 ---
 
